@@ -1,0 +1,16 @@
+const Post = new require('../database/models/Post')
+const path = new require('path')
+
+module.exports = async (req, res) =>{
+    const { image } = req.files
+
+    image.mv(path.resolve(__dirname, '..','public/posts', image.name), (error) => {
+        Post.create({
+        ...req.body,
+        image : `/posts/${image.name}`,
+        author : req.session.userId
+        }, (error, post) => {
+        res.redirect("/");
+        });
+    })
+}
